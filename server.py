@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 DATABASE = 'database.db'
 SCHEMA = 'schema.sql'
+RETRIEVE_URL = 'http://127.0.0.1:5000/retrieve/{}'
 
 def init_db():
     # TODO: Change this to checking if table exists
@@ -32,6 +33,7 @@ def write_db(query, args=()):
     db = get_db()
     cur = db.execute(query, args)
     db.commit()
+    return cur.lastrowid
 
 @app.teardown_appcontext
 def close_connection(exception):
@@ -49,8 +51,8 @@ def retrieve(paste_id):
 
 @app.route('/write/<string:text>', methods=['POST'])
 def write(text):
-    write_db('insert into pastes (text) values (?);', [text])
-    return "works"
+    paste_id = write_db('insert into pastes (text) values (?);', [text])
+    return "See value at: " + RETRIEVE_URL.format(paste_id)
 
 ### Start up Tasks
 
