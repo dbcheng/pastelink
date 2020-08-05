@@ -46,8 +46,8 @@ def close_connection(exception):
 def retrieve(paste_id):
     text = query_db('select * from pastes where paste_id = ?', [paste_id], one=True)
     if text is None:
-        return "No Post exists"
-    return text[1]
+        return { 'text': "No Post exists"}
+    return { 'text': text[1] }
 
 @app.route('/write/<string:text>', methods=['POST'])
 def write(text):
